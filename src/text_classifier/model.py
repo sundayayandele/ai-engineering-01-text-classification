@@ -21,7 +21,7 @@ class TextClassifier:
     pipeline: Pipeline
 
     @classmethod
-    def load(cls, path: str | Path) -> "TextClassifier":
+    def load(cls, path: str | Path) -> TextClassifier:
         return cls(joblib.load(path))
 
     def save(self, path: str | Path) -> None:
