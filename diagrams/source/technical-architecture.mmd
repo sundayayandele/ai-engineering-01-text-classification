@@ -1,0 +1,10 @@
+flowchart TB
+Internet --> Ingress
+Ingress --> Service
+Service --> Pod1[API Pod]
+Service --> Pod2[API Pod]
+Pod1 --> Artifact[(Approved Model)]
+Pod2 --> Artifact
+Pod1 --> Metrics
+Pod2 --> Metrics
+Metrics --> Prometheus --> Grafana
