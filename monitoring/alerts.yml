@@ -1,0 +1,14 @@
+groups:
+  - name: text-classifier
+    rules:
+      - alert: TextClassifierHigh5xxRate
+        expr: |
+          sum(rate(text_classifier_http_requests_total{status=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(text_classifier_http_requests_total[5m])), 0.001)
+          > 0.05
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: Text classifier 5xx ratio is above 5%
