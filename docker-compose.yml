@@ -1,0 +1,11 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      MODEL_PATH: /app/artifacts/model.joblib
+      DECISION_THRESHOLD: "0.50"
+    read_only: true
+    tmpfs:
+      - /tmp
