@@ -12,14 +12,25 @@ spec:
       labels:
         app: text-classifier
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: api
           image: ghcr.io/sundayayandele/ai-engineering-01-text-classification:latest
+          imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8000
+            - name: http
+              containerPort: 8000
           env:
             - name: MODEL_PATH
               value: /app/artifacts/model.joblib
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
           resources:
             requests:
               cpu: 250m
@@ -30,11 +41,17 @@ spec:
           readinessProbe:
             httpGet:
               path: /health/ready
-              port: 8000
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /health/live
-              port: 8000
+              port: http
             periodSeconds: 20
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
