@@ -1,4 +1,6 @@
-provider "azurerm" { features {} }
+provider "azurerm" {
+  features {}
+}
 
 resource "azurerm_resource_group" "app" {
   name     = "${var.project}-rg"
@@ -13,4 +15,6 @@ resource "azurerm_container_registry" "app" {
   admin_enabled       = false
 }
 
-output "registry_login_server" { value = azurerm_container_registry.app.login_server }
+output "registry_login_server" {
+  value = azurerm_container_registry.app.login_server
+}
