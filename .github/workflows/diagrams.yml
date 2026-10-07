@@ -1,0 +1,32 @@
+name: diagrams
+on:
+  push:
+    paths:
+      - "diagrams/source/**"
+      - ".github/workflows/diagrams.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-mermaid:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+      - run: npm install --global @mermaid-js/mermaid-cli
+      - name: Render Mermaid sources
+        run: |
+          mkdir -p /tmp/diagrams
+          for f in diagrams/source/*.mmd; do
+            name=$(basename "$f" .mmd)
+            mmdc -i "$f" -o "/tmp/diagrams/$name.svg"
+            mmdc -i "$f" -o "/tmp/diagrams/$name.png"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rendered-architecture-diagrams
+          path: /tmp/diagrams/
