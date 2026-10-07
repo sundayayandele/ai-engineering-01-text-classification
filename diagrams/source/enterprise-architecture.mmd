@@ -1,0 +1,19 @@
+flowchart LR
+subgraph Business
+ U[Customer / User] --> C[Message Classification Capability]
+ A[Analyst] --> R[Review & Exception Handling]
+end
+subgraph Application
+ G[API Gateway] --> API[Classification Service]
+ API --> MR[Model Runtime]
+ REG[Model Lifecycle / Registry] --> MR
+end
+subgraph Technology
+ K[Kubernetes / OpenShift]
+ OBS[Observability]
+ IAM[IAM / Policy]
+end
+C --> G
+MR --> K
+API --> OBS
+IAM --> G
