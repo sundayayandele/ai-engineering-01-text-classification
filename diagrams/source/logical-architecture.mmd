@@ -1,0 +1,4 @@
+flowchart LR
+Client --> Gateway --> API --> Validation --> Inference --> Artifact[(Model Artifact)]
+API --> Telemetry --> Observability
+Pipeline[Training / CI] --> Artifact
