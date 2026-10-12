@@ -115,4 +115,4 @@ Code in this repository is intended to be released under the MIT License. Datase
 This repository is the **golden reference** for the remaining 19 projects. Patterns are reused only where appropriate; later projects expand the platform for CV, speech, semantic search, RAG, agents, fine-tuning and enterprise model serving.
 
 ## Architectural Diagram Overview
-[https://github.com/sundayayandele/ai-engineering-01-text-classification/blob/main/Architecturfal%20Diagrams.png]
+[Architecture Images](https://github.com/sundayayandele/ai-engineering-01-text-classification/blob/main/Architecturfal%20Diagrams.png)
