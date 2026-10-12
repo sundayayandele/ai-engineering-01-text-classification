@@ -20,8 +20,6 @@ This repository documents three required views plus C4:
 
 See [Architecture](docs/architecture/ARCHITECTURE.md), [Infrastructure](docs/infrastructure/INFRASTRUCTURE.md), [Security](docs/security/SECURITY.md), and [ADRs](docs/adr/ADR-001-model-strategy.md).
 
-[ai-engineering-01-text-classification/Architecturfal Diagrams.png]
-
 
 ## Dataset
 
@@ -115,3 +113,6 @@ Code in this repository is intended to be released under the MIT License. Datase
 ## Series
 
 This repository is the **golden reference** for the remaining 19 projects. Patterns are reused only where appropriate; later projects expand the platform for CV, speech, semantic search, RAG, agents, fine-tuning and enterprise model serving.
+
+## Architectural Diagram Overview
+[https://github.com/sundayayandele/ai-engineering-01-text-classification/blob/main/Architecturfal%20Diagrams.png]
