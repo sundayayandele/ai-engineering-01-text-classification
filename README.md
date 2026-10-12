@@ -20,6 +20,9 @@ This repository documents three required views plus C4:
 
 See [Architecture](docs/architecture/ARCHITECTURE.md), [Infrastructure](docs/infrastructure/INFRASTRUCTURE.md), [Security](docs/security/SECURITY.md), and [ADRs](docs/adr/ADR-001-model-strategy.md).
 
+[ai-engineering-01-text-classification/Architecturfal Diagrams.png]
+
+
 ## Dataset
 
 Reference dataset: **UCI SMS Spam Collection**, 5,574 labeled SMS messages, DOI `10.24432/C5CC84`, licensed **CC BY 4.0**. Data is downloaded at runtime and is not committed. See [DATASETS.md](docs/datasets/DATASETS.md).
