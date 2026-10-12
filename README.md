@@ -25,6 +25,91 @@ See [Architecture](docs/architecture/ARCHITECTURE.md), [Infrastructure](docs/inf
 
 Reference dataset: **UCI SMS Spam Collection**, 5,574 labeled SMS messages, DOI `10.24432/C5CC84`, licensed **CC BY 4.0**. Data is downloaded at runtime and is not committed. See [DATASETS.md](docs/datasets/DATASETS.md).
 
+## Hands-on learner labs — Docker Desktop, Rancher Desktop, Podman Desktop, Postman and GitHub runners
+
+**Two tracks remain:** Educational/Portfolio labs below; Enterprise/Production is the documented reference architecture and must be independently validated before deployment.
+
+### Hardware and resource sizing
+
+| Profile | CPU | RAM | Free disk |
+|---|---|---|---|
+| Single API container | 1 vCPU | 1 GiB | 5–10 GiB |
+| Recommended desktop host | 2–4 logical CPUs | 8 GiB (16 GiB preferred) | 15–25 GiB |
+| Desktop container engine VM (Windows/macOS) | 2–4 CPUs | 4 GiB minimum, 6–8 GiB comfortable | 15–25 GiB |
+| Two-replica local simulation | 2 CPU total | 2 GiB total container limits, plus engine/host overhead | 15–25 GiB |
+
+These are initial **learning estimates**, not measured production requirements. No GPU needed. For enterprise sizing and costs see [capacity planning](docs/infrastructure/CAPACITY-PLANNING.md) and [TCO](docs/COST-TCO.md).
+
+### Step 1 — Fork, clone and prepare your model
+
+Fork this repository, clone **your fork** and create a `learner/desktop-lab` branch. Install Git and Python 3.12:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/ai-engineering-01-text-classification.git
+cd ai-engineering-01-text-classification
+git switch -c learner/desktop-lab
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[dev]"
+python scripts/train.py
+pytest -q
+```
+
+Windows PowerShell: `py -3.12 -m venv .venv` then `.venv\\Scripts\\Activate.ps1`. Confirm `artifacts/model.joblib` exists. Project 01's Dockerfile copies the trained artifact during build, so train first, then rebuild when weights change.
+
+### Step 2A — Docker Desktop
+
+Install [Docker Desktop](https://www.docker.com/products/docker-desktop/), start the Linux container engine and allocate at least **2 CPUs, 4 GiB RAM and 15 GiB disk** where supported (WSL2 limits may be configured separately). Verify `docker version` and `docker compose version`, then:
+
+```bash
+docker compose -f docker-compose.yml build
+docker compose -f docker-compose.yml up -d
+docker compose -f docker-compose.yml ps
+docker compose -f docker-compose.yml logs --tail=50
+```
+
+For a local-only lab, change the Compose port binding from `8000:8000` to `127.0.0.1:8000:8000` before starting, to avoid listening on all host interfaces.
+
+### Step 2B — Rancher Desktop
+
+Install [Rancher Desktop](https://rancherdesktop.io/), select **dockerd (moby)** engine, start the app, configure the VM resources (2+ CPUs, 4+ GiB RAM), and verify `docker version` and `docker compose version`. Use the **same Compose commands from Step 2A**. Optional Kubernetes is a learning cluster, not multi-node HA.
+
+### Step 2C — Podman Desktop
+
+Install [Podman Desktop](https://podman-desktop.io/), complete onboarding, and on Windows/macOS start a **Podman machine**. Confirm `podman version` and `podman info`. From the repository root:
+
+```bash
+podman build -t project01-text-classifier:local .
+podman run -d --name project01-api -p 127.0.0.1:8000:8000 --cpus 1 --memory 1g -e MODEL_PATH=/app/artifacts/model.joblib project01-text-classifier:local
+podman ps
+podman logs project01-api
+podman stats --no-stream project01-api
+```
+
+Podman machine host-volume sharing depends on OS and VM settings. See the detailed guide for troubleshooting, SELinux and Windows paths.
+
+### Step 3 — Postman API test
+
+1. Verify `GET http://127.0.0.1:8000/health/live` and `GET http://127.0.0.1:8000/health/ready` return HTTP 200.
+2. Open `http://127.0.0.1:8000/docs` to inspect the API.
+3. In **Postman**, create **POST** `http://127.0.0.1:8000/predict` → **Body → raw → JSON** and paste:
+
+```json
+{"text":"Congratulations! Claim your free prize now"}
+```
+
+4. Click **Send**; expect HTTP 200 with prediction fields. Capture logs and screenshots as portfolio evidence.
+5. Cleanup: `docker compose -f docker-compose.yml down` (Docker/Rancher) or `podman rm -f project01-api` (Podman).
+
+### Step 4 — GitHub-hosted runner lab (no desktop installation)
+
+1. Fork the repository; create branch `learner/github-runner-lab` and enable **Actions** in your fork after reviewing the workflows.
+2. Commit a small code change or open a pull request; inspect the **ci** run and record the SHA, logs and result.
+3. Project 01's existing CI checks lint/tests and builds a container, but does not verify a live trained inference service end-to-end. Use the local lab above for that additional evidence.
+4. Check GitHub's current Actions free-runner eligibility, minutes and billing settings. A hosted runner is temporary, not persistent hosting or genuine HA.
+
+**Detailed step-by-step guide:** [Desktop containers, Postman and GitHub runner lab](docs/learning/DESKTOP-CONTAINERS-AND-RUNNERS-LAB.md).
+
 ## Quick start
 
 ```bash
